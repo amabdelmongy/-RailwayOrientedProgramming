@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Payment.GetByIdErrorHandler.fs" />
+        <Compile Include="PaymentAggregate.fs" />
+        <Compile Include="PaymentDto.fs" />
+        <Compile Include="PaymentGetById.fs" />
+        <Compile Include="Program.fs" />
+    </ItemGroup>
+
+</Project>
