@@ -7,7 +7,7 @@ open ROP
 
 let webApp =
         choose [
-            GET >=> choose [
+            GET >=> choose [ //Kleisli composition (>=>) for composing monadic functions.
                 route "/ping" >=> text "pong"
                 route "/" >=> text "Hello APM!"
                 routef "/payments/%s" (fun id ->

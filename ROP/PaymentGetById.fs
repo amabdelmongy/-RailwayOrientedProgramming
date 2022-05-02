@@ -19,8 +19,7 @@ module GetPaymentHttpHandler =
         let getPaymentById id =
             //todo call repository to get payment by id
             match id.ToString() with
-            | "1d551eed-a974-4770-a824-635b4b72447f" -> None
-            | _ ->
+            | "1d551eed-a974-4770-a824-635b4b72447f" ->
                 {
                     PaymentAggregate.Id = id |> PaymentId
                     Status = PaymentStatus.Pending
@@ -28,6 +27,7 @@ module GetPaymentHttpHandler =
                     CreatedDate =DateTime.UtcNow
                 }
                 |> Some
+            | _ -> None
 
         let verifyResultIsSome result =
             match result with
@@ -38,7 +38,7 @@ module GetPaymentHttpHandler =
             PaymentToDto.convertPaymentToDto payment
 
         let convertToResponse paymentDto =
-            setStatusCode StatusCodes.Status200OK >=> json paymentDto
+            setStatusCode StatusCodes.Status200OK >=> json paymentDto //Kleisli composition (>=>) for composing monadic functions.
 
         //Railway Oriented Programming
         //https://fsharpforfunandprofit.com/rop/
@@ -46,8 +46,8 @@ module GetPaymentHttpHandler =
             let result =
                 parsePaymentId
                 >> Result.map      getPaymentById
-                >> Result.bind     verifyResultIsSome
-                >> Result.map      convertPaymentToDto
+                >> Result.bind     verifyResultIsSome //“bind” (>>=) for integrating monadic functions into the pipeline.
+                >> Result.map      convertPaymentToDto  // “map” (fmap) for integrating non-monadic functions into the pipeline.
                 >> Result.map      convertToResponse
                 >> Result.mapError getPaymentHttpErrorHandler.ConvertErrorToResponse
 
