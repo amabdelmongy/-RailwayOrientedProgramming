@@ -2,7 +2,7 @@
 
 open System
 
-type PaymentId = PaymentId of string // unique signature for PaymentId that depends on string
+type PaymentId = PaymentId of Guid // unique signature for PaymentId that depends on string
 module PaymentId =
     let value (PaymentId paymentId) = paymentId // Deconstruct when we have PaymentId and needs to extract value as string
 

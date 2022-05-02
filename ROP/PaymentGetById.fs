@@ -2,28 +2,32 @@
 
 open System
 open Microsoft.AspNetCore.Http
+open Giraffe
 
 type GetPaymentHttpHandler =
     {
-        GetPayment: unit -> IResult
+        GetPayment: string -> HttpHandler
     }
 
 module GetPaymentHttpHandler =
     let provide getPaymentHttpErrorHandler =
-        let parsePaymentId stringPaymentId =
-            match String.IsNullOrWhiteSpace stringPaymentId with
-            | false -> stringPaymentId |> Ok
-            | _ -> Error GetPaymentError.InvalidId
+        let parsePaymentId (stringPaymentId:string) =
+            match Guid.TryParse(stringPaymentId) with
+            | true, parsedGuid ->  Ok parsedGuid
+            | _ -> GetPaymentError.InvalidId |> Error
 
         let getPaymentById id =
             //todo call repository to get payment by id
-            {
-                PaymentAggregate.Id = id |> PaymentId
-                Status = PaymentStatus.Pending
-                IsOnHold = false
-                CreatedDate =DateTime.UtcNow
-            }
-            |> Some
+            match id.ToString() with
+            | "1d551eed-a974-4770-a824-635b4b72447f" -> None
+            | _ ->
+                {
+                    PaymentAggregate.Id = id |> PaymentId
+                    Status = PaymentStatus.Pending
+                    IsOnHold = false
+                    CreatedDate =DateTime.UtcNow
+                }
+                |> Some
 
         let verifyResultIsSome result =
             match result with
@@ -34,12 +38,11 @@ module GetPaymentHttpHandler =
             PaymentToDto.convertPaymentToDto payment
 
         let convertToResponse paymentDto =
-            Results.Json paymentDto
+            setStatusCode StatusCodes.Status200OK >=> json paymentDto
 
         //Railway Oriented Programming
         //https://fsharpforfunandprofit.com/rop/
-        let getPayment () =
-            let paymentId = "1" //Todo read from route value
+        let getPayment paymentId =
             let result =
                 parsePaymentId
                 >> Result.map      getPaymentById

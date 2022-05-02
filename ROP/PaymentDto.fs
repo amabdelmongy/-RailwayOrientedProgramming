@@ -5,7 +5,7 @@ open System
 //dto should contains only primitive types like string and bool
 type PaymentDto =
     {
-        Id: string
+        Id: Guid
         Status: string
         IsOnHold: Boolean
         CreatedDate: DateTime

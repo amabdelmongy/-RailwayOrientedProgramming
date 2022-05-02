@@ -1,31 +1,43 @@
-open System
 open Microsoft.AspNetCore.Builder
-open Microsoft.AspNetCore.Http
+open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Hosting
+open Microsoft.Extensions.DependencyInjection
+open Giraffe
 open ROP
 
-[<EntryPoint>]
-let main args =
-    let builder = WebApplication.CreateBuilder(args)
-    let app = builder.Build()
-
-    app.MapGet("/",
-            Func<string>(fun () -> "Hello Checkout!")
-        )
-        |> //Pipelines let result = 100 |> function1 |> function2
-        ignore
-
-    app.MapGet("/payments/{id}",
-                Func<IResult>(fun () ->
+let webApp =
+        choose [
+            GET >=> choose [
+                route "/ping" >=> text "pong"
+                route "/" >=> text "Hello APM!"
+                routef "/payments/%s" (fun id ->
                     let getPaymentHttpHandler =
                         GetPaymentHttpErrorHandler.provide()
                         |> GetPaymentHttpHandler.provide
 
-                    getPaymentHttpHandler.GetPayment())
+                    getPaymentHttpHandler.GetPayment id)
+            ]
+        ]
 
-                ) |> ignore
+let configureApp (app : IApplicationBuilder) =
+    // Add Giraffe to the ASP.NET Core pipeline
+    app.UseGiraffe webApp
 
-    app.Run()
+let configureServices (services : IServiceCollection) =
+    // Add Giraffe dependencies
+    services.AddGiraffe() |> ignore
 
-    0 // Exit code
+[<EntryPoint>]
+let main _ =
+    Host.CreateDefaultBuilder()
+        .ConfigureWebHostDefaults(
+            fun webHostBuilder ->
+                webHostBuilder
+                    .Configure(configureApp)
+                    .ConfigureServices(configureServices)
+                    |> ignore)
+        .Build()
+        .Run()
+    0
+
 

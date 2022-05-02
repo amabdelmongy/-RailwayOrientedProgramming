@@ -1,6 +1,7 @@
 namespace ROP
 
 open Microsoft.AspNetCore.Http
+open Giraffe
 
 //Discriminated Unions
 type GetPaymentError =
@@ -9,7 +10,7 @@ type GetPaymentError =
 
 type GetPaymentErrorHandler =
     {
-        ConvertErrorToResponse: GetPaymentError -> IResult
+        ConvertErrorToResponse: GetPaymentError -> HttpHandler
     }
 
 module GetPaymentHttpErrorHandler =
@@ -17,9 +18,11 @@ module GetPaymentHttpErrorHandler =
         let convertErrorToResponse (error:GetPaymentError) =
             match error with
             | InvalidId ->
-                Results.Json("invalid_id", statusCode = StatusCodes.Status400BadRequest)
-            | PaymentNotFound -> 
-                Results.Json("payment_not_found", statusCode = StatusCodes.Status404NotFound)
+                 setStatusCode StatusCodes.Status400BadRequest
+                >=> json "invalid_id"
+            | PaymentNotFound ->
+                  setStatusCode StatusCodes.Status404NotFound
+                >=> json "payment_not_found"
 
         {
             ConvertErrorToResponse = convertErrorToResponse
