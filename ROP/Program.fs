@@ -9,7 +9,7 @@ let webApp =
         choose [
             GET >=> choose [ //Kleisli composition (>=>) for composing monadic functions.
                 route "/ping" >=> text "pong"
-                route "/" >=> text "Hello APM!"
+                route "/" >=> text "Hello World!"
                 routef "/payments/%s" (fun id ->
                     let getPaymentHttpHandler =
                         GetPaymentHttpErrorHandler.provide()
