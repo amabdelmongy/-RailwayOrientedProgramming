@@ -28,6 +28,9 @@ module InvoiceAggregateBuilder =
             | InvoiceAccepted _ ->
                 Some { invoice with Status = InvoiceStatus.Accepted }
 
+    //fold: Applies a function to each element of the collection
+    //fold:- the accumulator was initialized at the top level,
+    // and was passed down to each lower level until the lowest and last level was reached
     let getCurrentStateFrom events =
         events
         |> Seq.fold applyEventTo None
