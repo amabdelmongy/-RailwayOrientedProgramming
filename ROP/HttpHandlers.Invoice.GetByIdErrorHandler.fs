@@ -4,25 +4,25 @@ open Microsoft.AspNetCore.Http
 open Giraffe
 
 //Discriminated Unions
-type GetPaymentError =
+type GetInvoiceError =
     | InvalidId
-    | PaymentNotFound
+    | InvoiceNotFound
 
-type GetPaymentErrorHandler =
+type GetInvoiceErrorHandler =
     {
-        ConvertErrorToResponse: GetPaymentError -> HttpHandler
+        ConvertErrorToResponse: GetInvoiceError -> HttpHandler
     }
 
-module GetPaymentHttpErrorHandler =
+module GetInvoiceHttpErrorHandler =
     let provide () =
-        let convertErrorToResponse (error:GetPaymentError) =
+        let convertErrorToResponse (error:GetInvoiceError) =
             match error with
             | InvalidId ->
                  setStatusCode StatusCodes.Status400BadRequest
                 >=> json "invalid_id"
-            | PaymentNotFound ->
+            | InvoiceNotFound ->
                   setStatusCode StatusCodes.Status404NotFound
-                >=> json "payment_not_found"
+                >=> json "invoice_not_found"
 
         {
             ConvertErrorToResponse = convertErrorToResponse
