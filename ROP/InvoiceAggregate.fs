@@ -2,9 +2,9 @@
 
 open System
 
-type InvoiceId = InvoiceId of Guid // unique signature for InvoiceId that depends on string
+type InvoiceId = InvoiceId of Guid // unique signature for InvoiceId that depends on Guid
 module InvoiceId =
-    let value (InvoiceId invoiceId) = invoiceId // Deconstruct when we have InvoiceId and needs to extract value as string
+    let value (InvoiceId invoiceId) = invoiceId // Deconstruct when we have InvoiceId and needs to extract value as Guid
 
 type Currency = Currency of string
 module Currency =

@@ -48,7 +48,7 @@ module GetInvoiceHttpHandler =
             let result =
                 parseInvoiceId
                 >> Result.map      getInvoiceById
-                >> Result.bind     verifyResultIsSome //“bind” (>>=) for integrating monadic functions into the pipeline.
+                >> Result.bind     verifyResultIsSome   //“bind” for integrating monadic functions into the pipeline.
                 >> Result.map      convertInvoiceToDto  // “map” (fmap) for integrating non-monadic functions into the pipeline.
                 >> Result.map      convertToResponse
                 >> Result.mapError getInvoiceHttpErrorHandler.ConvertErrorToResponse
