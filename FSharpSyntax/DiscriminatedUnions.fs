@@ -16,9 +16,10 @@ module DiscriminatedUnions =
 
     // ======== Pattern Matching ========
     // Match..with.. is a supercharged case/switch statement.
+    // How do know the type of the shape?
     let matchShape shape =
         match shape with
-        | Rectangle(height,_) -> printfn $"Rectangle with length %f{height}"
+        | Rectangle(height,_) -> printfn $"Rectangle with height %f{height}"
         | Circle(radius) -> printfn $"Circle with radius %f{radius}"
         | _ -> printfn " shape is something else"   // underscore matches anything
 

@@ -26,7 +26,7 @@ module GetInvoiceHttpHandler =
                     Amount = 100m
                     Status = InvoiceStatus.Pending
                     IsOnHold = false
-                    CreatedDate =DateTime.UtcNow
+                    CreatedDate = DateTime.UtcNow
                 }
                 |> Some
             | _ -> None
@@ -42,22 +42,14 @@ module GetInvoiceHttpHandler =
         let convertToResponse invoiceDto =
             setStatusCode StatusCodes.Status200OK >=> json invoiceDto //Kleisli composition (>=>) for composing monadic functions.
 
-        //Railway Oriented Programming
-        //https://fsharpforfunandprofit.com/rop/
         let getInvoice invoiceId =
             let result =
                 parseInvoiceId
-                >> Result.map      getInvoiceById
+                >> Result.map      getInvoiceById       // “map” (fmap) for integrating non-monadic functions into the pipeline.
                 >> Result.bind     verifyResultIsSome   //“bind” for integrating monadic functions into the pipeline.
-                >> Result.map      convertInvoiceToDto  // “map” (fmap) for integrating non-monadic functions into the pipeline.
+                >> Result.map      convertInvoiceToDto
                 >> Result.map      convertToResponse
                 >> Result.mapError getInvoiceHttpErrorHandler.ConvertErrorToResponse
-
-                //>> Function composition
-                //Functions in F# can be composed from other functions.
-                //the composition of two functions function1 and function2 is another
-                //function that represents the application of function1 followed
-                //the application of function2:
 
             match result invoiceId with
             | Ok result -> result

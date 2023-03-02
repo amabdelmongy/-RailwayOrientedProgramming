@@ -12,7 +12,6 @@
         <Compile Include="Invoice.Events.fs" />
         <Compile Include="InvoiceAggregateBuilder.fs" />
         <Compile Include="Program.fs" />
-        <Folder Include="Domain" />
     </ItemGroup>
 
     <ItemGroup>
