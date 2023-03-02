@@ -6,7 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Program.fs"/>
+        <Compile Include="VariablesAndList.fs" />
+        <Compile Include="Functions.fs" />
+        <Compile Include="DiscriminatedUnions.fs" />
+        <Compile Include="Program.fs" />
     </ItemGroup>
 
 </Project>
